@@ -1,0 +1,6 @@
+{
+  "name": "FAOLAT Pharmaceuticals Portal",
+  "description": "Luxury pharmaceutical portal with AI prescription parsing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
