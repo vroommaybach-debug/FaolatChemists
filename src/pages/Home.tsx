@@ -7,11 +7,13 @@ import {
   CheckCircle2, FileText, Truck, UserPlus, Pill, Sparkles, FileSearch, BadgeCheck
 } from 'lucide-react';
 import { useCartStore } from '../store/useCartStore';
+import { TiltCard } from '../components/TiltCard';
 import { GlobalHeader } from '../components/GlobalHeader';
 import heroImage from '../assets/images/hero_lab_1782464564992.jpg';
 
 export function Home() {
   const { scrollYProgress } = useScroll();
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '200px']);
   const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
   
@@ -36,8 +38,8 @@ export function Home() {
       <GlobalHeader />
 
       {/* 1. HERO */}
-      <section className="relative min-h-[100vh] flex items-center justify-center pt-20 overflow-hidden bg-brand-navy text-white">
-        <motion.div style={{ y, opacity }} className="absolute inset-0 z-0 flex items-center justify-center">
+      <section className="relative min-h-[100vh] flex items-center justify-center pt-20 overflow-hidden bg-brand-navy text-white perspective-1000">
+        <motion.div style={{ y, opacity, scale }} className="absolute inset-0 z-0 flex items-center justify-center">
            <img src={heroImage} alt="Pharmaceutical Lab" className="w-full h-full object-cover mix-blend-overlay opacity-60" />
            <div className="absolute inset-0 bg-gradient-to-t from-brand-navy via-brand-navy/60 to-transparent" />
         </motion.div>
@@ -138,13 +140,15 @@ export function Home() {
               { icon: Zap, title: 'Secure Online Orders', desc: 'Encrypted transactions and pharmacist-verified prescriptions.' },
               { icon: Truck, title: 'Nigeria-Wide Delivery', desc: 'Reliable dispatch to your home, clinic, or wholesale business.' }
             ].map((p, idx) => (
-              <motion.div key={idx} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.1 }} className="flex flex-col items-center text-center p-6 bg-slate-50 rounded border border-slate-100">
-                <div className="w-12 h-12 bg-brand-teal/10 text-brand-teal rounded-full flex items-center justify-center mb-6">
-                  <p.icon className="w-6 h-6" />
+              <TiltCard key={idx} className="h-full">
+                <div className="flex flex-col items-center text-center p-6 bg-slate-50 rounded border border-slate-100 h-full">
+                  <div className="w-12 h-12 bg-brand-teal/10 text-brand-teal rounded-full flex items-center justify-center mb-6">
+                    <p.icon className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-medium text-brand-navy mb-2">{p.title}</h3>
+                  <p className="text-sm text-slate-500 font-light leading-relaxed">{p.desc}</p>
                 </div>
-                <h3 className="font-medium text-brand-navy mb-2">{p.title}</h3>
-                <p className="text-sm text-slate-500 font-light leading-relaxed">{p.desc}</p>
-              </motion.div>
+              </TiltCard>
             ))}
           </div>
         </div>
@@ -165,39 +169,37 @@ export function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredProducts.map((product, idx) => (
-              <motion.div 
-                key={product.id}
-                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: idx * 0.1 }}
-                className="group border border-slate-200 rounded bg-white overflow-hidden hover:border-brand-teal hover:shadow-xl transition-all duration-500 flex flex-col"
-              >
-                <Link to={`/catalog/${product.id}`} className="block flex-1 flex flex-col">
-                  <div className="p-8 pb-0">
-                    <div className="flex justify-between items-start mb-8">
-                      <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-medium bg-slate-100 px-3 py-1 rounded">{product.sku}</span>
-                      {product.requires_prescription && (
-                        <span className="px-2 py-1 rounded bg-brand-red/10 text-brand-red text-[10px] tracking-widest uppercase font-bold">Prescription Rx</span>
-                      )}
+              <TiltCard key={product.id} className="h-full">
+                <div className="group border border-slate-200 rounded bg-white overflow-hidden hover:border-brand-teal hover:shadow-xl transition-all duration-500 flex flex-col h-full">
+                  <Link to={`/catalog/${product.id}`} className="block flex-1 flex flex-col">
+                    <div className="p-8 pb-0">
+                      <div className="flex justify-between items-start mb-8">
+                        <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 font-medium bg-slate-100 px-3 py-1 rounded">{product.sku}</span>
+                        {product.requires_prescription && (
+                          <span className="px-2 py-1 rounded bg-brand-red/10 text-brand-red text-[10px] tracking-widest uppercase font-bold">Prescription Rx</span>
+                        )}
+                      </div>
+                      <div className="aspect-square mb-8 rounded bg-brand-light flex items-center justify-center group-hover:bg-brand-teal/5 transition-colors">
+                        <Pill className="w-16 h-16 text-slate-300 group-hover:text-brand-teal transition-colors duration-500" />
+                      </div>
                     </div>
-                    <div className="aspect-square mb-8 rounded bg-brand-light flex items-center justify-center group-hover:bg-brand-teal/5 transition-colors">
-                      <Pill className="w-16 h-16 text-slate-300 group-hover:text-brand-teal transition-colors duration-500" />
+                    <div className="p-8 pt-0 flex-1 flex flex-col">
+                      <h3 className="text-xl font-display text-brand-navy mb-2">{product.name}</h3>
+                      <p className="text-slate-500 text-sm font-light line-clamp-2 mb-8">{product.description}</p>
+                      
+                      <div className="mt-auto flex items-center justify-between">
+                        <span className="text-xl font-mono text-brand-navy font-medium">₦{(product.price * 1500).toLocaleString()}</span>
+                        <button 
+                          onClick={(e) => { e.preventDefault(); addItem({...product, quantity: 1}); openCart(); }}
+                          className="px-6 py-3 rounded bg-brand-navy text-white text-sm font-medium hover:bg-brand-teal transition-colors relative overflow-hidden"
+                        >
+                          <span className="relative z-10">Add to Cart</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                  <div className="p-8 pt-0 flex-1 flex flex-col">
-                    <h3 className="text-xl font-display text-brand-navy mb-2">{product.name}</h3>
-                    <p className="text-slate-500 text-sm font-light line-clamp-2 mb-8">{product.description}</p>
-                    
-                    <div className="mt-auto flex items-center justify-between">
-                      <span className="text-xl font-mono text-brand-navy font-medium">₦{(product.price * 1500).toLocaleString()}</span>
-                      <button 
-                        onClick={(e) => { e.preventDefault(); addItem({...product, quantity: 1}); openCart(); }}
-                        className="px-6 py-3 rounded bg-brand-navy text-white text-sm font-medium hover:bg-brand-teal transition-colors"
-                      >
-                        Add to Cart
-                      </button>
-                    </div>
-                  </div>
-                </Link>
-              </motion.div>
+                  </Link>
+                </div>
+              </TiltCard>
             ))}
           </div>
         </div>

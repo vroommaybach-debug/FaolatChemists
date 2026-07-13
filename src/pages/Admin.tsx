@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { GlobalHeader } from '../components/GlobalHeader';
 import { Users, ShoppingBag, TrendingUp, AlertCircle, Package } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
 
 export function Admin() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -43,7 +44,7 @@ export function Admin() {
           </div>
 
           {activeTab === 'overview' && (
-            <div className="space-y-8">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }} className="space-y-8">
               {/* KPIs */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
@@ -52,7 +53,10 @@ export function Admin() {
                   { title: 'Pending Prescriptions', value: '12', icon: AlertCircle, alert: true },
                   { title: 'Low Stock Alerts', value: '8', icon: Package }
                 ].map((kpi, i) => (
-                  <div key={i} className="bg-white p-6 rounded border border-slate-200 shadow-sm">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.1 }}
+                    key={i} className="bg-white p-6 rounded border border-slate-200 shadow-sm"
+                  >
                     <div className="flex justify-between items-start mb-4">
                       <div className={`p-2 rounded ${kpi.alert ? 'bg-brand-red/10 text-brand-red' : 'bg-brand-teal/10 text-brand-teal'}`}>
                         <kpi.icon className="w-5 h-5" />
@@ -60,12 +64,12 @@ export function Admin() {
                     </div>
                     <h3 className="text-2xl font-display text-brand-navy mb-1">{kpi.value}</h3>
                     <p className="text-sm font-light text-slate-500 uppercase tracking-wider">{kpi.title}</p>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
               {/* Placeholder table for recent orders */}
-              <div className="bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="bg-white rounded border border-slate-200 shadow-sm overflow-hidden">
                 <div className="p-6 border-b border-slate-100 flex justify-between items-center">
                   <h3 className="font-medium text-brand-navy">Recent Orders</h3>
                   <button className="text-sm text-brand-teal hover:underline font-medium">View All</button>
@@ -73,17 +77,17 @@ export function Admin() {
                 <div className="p-6 text-center py-12 text-slate-500 font-light">
                   Supabase database connection required to fetch live orders.
                 </div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           )}
 
           {activeTab !== 'overview' && (
-            <div className="bg-white rounded border border-slate-200 shadow-sm p-12 text-center text-slate-500 font-light">
+            <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} className="bg-white rounded border border-slate-200 shadow-sm p-12 text-center text-slate-500 font-light">
                <div className="w-16 h-16 rounded-full bg-slate-50 mx-auto mb-4 flex items-center justify-center">
                  <AlertCircle className="w-8 h-8 text-slate-300" />
                </div>
                <p className="text-lg">Connect to Supabase to enable the {activeTab} management module.</p>
-            </div>
+            </motion.div>
           )}
 
         </div>

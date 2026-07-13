@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Link, useNavigate } from 'react-router-dom';
 import { GlobalHeader } from './GlobalHeader';
+import { TiltCard } from './TiltCard';
 
 export function Dashboard() {
   const therapySchedule = useTherapySchedule('alexander-o');
@@ -33,7 +34,7 @@ export function Dashboard() {
     <div className="min-h-screen bg-brand-light text-brand-dark font-sans selection:bg-brand-teal/30">
       <GlobalHeader />
 
-      <main className="max-w-7xl mx-auto px-6 pt-32 pb-12">
+      <main className="max-w-7xl mx-auto px-6 pt-32 pb-12 perspective-1000">
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,7 +62,7 @@ export function Dashboard() {
           <div className="lg:col-span-2 space-y-8">
             
             {/* Quick Actions / Schedule */}
-            <section className="bg-white border border-slate-200 rounded p-6 shadow-sm">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="bg-white border border-slate-200 rounded p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-display font-medium text-brand-navy flex items-center gap-2">
                   <CalendarIcon className="w-5 h-5 text-brand-teal" />
@@ -72,7 +73,7 @@ export function Dashboard() {
               <div className="space-y-4">
                 {therapySchedule.map((item, i) => (
                   <motion.div 
-                    initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 }}
+                    initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.1 + 0.2 }}
                     key={i} 
                     className="flex items-center justify-between p-4 bg-brand-light rounded border border-slate-100"
                   >
@@ -93,20 +94,20 @@ export function Dashboard() {
                   </motion.div>
                 ))}
               </div>
-            </section>
+            </motion.section>
 
             {/* Document Upload */}
-            <section className="bg-white border border-slate-200 rounded p-6 shadow-sm">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="bg-white border border-slate-200 rounded p-6 shadow-sm">
                <h2 className="text-xl font-display font-medium text-brand-navy mb-4 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-brand-teal" />
                   Upload Prescription
                </h2>
                <p className="text-slate-500 text-sm mb-6">Securely upload a photo or PDF of your doctor's prescription for pharmacist review.</p>
                <PrescriptionUploadZone />
-            </section>
+            </motion.section>
 
             {/* Medical Records & Vault */}
-            <section className="bg-white border border-slate-200 rounded p-6 shadow-sm">
+            <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="bg-white border border-slate-200 rounded p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-display font-medium text-brand-navy flex items-center gap-2">
                   Medical Records
@@ -122,16 +123,18 @@ export function Dashboard() {
                   { name: 'Dr. Adeyemi Note', date: 'Oct 12, 2023', type: 'Prescription' },
                   { name: 'Blood Panel Results', date: 'Sep 04, 2023', type: 'Lab Report' }
                 ].map((doc, idx) => (
-                  <div key={idx} className="p-4 rounded border border-slate-200 bg-brand-light hover:border-brand-teal transition-colors cursor-pointer group flex justify-between items-center">
-                    <div>
-                      <p className="text-xs uppercase tracking-widest text-slate-400 font-medium mb-1 font-mono">{doc.type}</p>
-                      <h4 className="text-sm font-medium text-brand-navy">{doc.name}</h4>
+                  <TiltCard key={idx}>
+                    <div className="p-4 rounded border border-slate-200 bg-brand-light hover:border-brand-teal transition-colors cursor-pointer group flex justify-between items-center">
+                      <div>
+                        <p className="text-xs uppercase tracking-widest text-slate-400 font-medium mb-1 font-mono">{doc.type}</p>
+                        <h4 className="text-sm font-medium text-brand-navy">{doc.name}</h4>
+                      </div>
+                      <span className="text-xs font-mono text-slate-500 group-hover:text-brand-teal transition-colors">{doc.date}</span>
                     </div>
-                    <span className="text-xs font-mono text-slate-500 group-hover:text-brand-teal transition-colors">{doc.date}</span>
-                  </div>
+                  </TiltCard>
                 ))}
               </div>
-            </section>
+            </motion.section>
 
           </div>
 
@@ -143,36 +146,39 @@ export function Dashboard() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="p-6 rounded border border-slate-200 bg-white shadow-sm"
             >
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-medium text-brand-navy flex items-center gap-2">
-                  <Pill className="w-4 h-4 text-brand-teal" />
-                  Quick Refill
-                </h3>
-                <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
-              </div>
-              
-              <div className="mb-6">
-                <p className="text-2xl font-display font-medium text-brand-navy">Amlodipine 5mg</p>
-                <p className="text-sm text-slate-500">30 Day Supply • 2 Refills Remaining</p>
-              </div>
+              <TiltCard>
+                <div className="p-6 rounded border border-slate-200 bg-white shadow-sm h-full">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-medium text-brand-navy flex items-center gap-2">
+                      <Pill className="w-4 h-4 text-brand-teal" />
+                      Quick Refill
+                    </h3>
+                    <span className="w-2 h-2 rounded-full bg-brand-teal animate-pulse" />
+                  </div>
+                  
+                  <div className="mb-6">
+                    <p className="text-2xl font-display font-medium text-brand-navy">Amlodipine 5mg</p>
+                    <p className="text-sm text-slate-500">30 Day Supply • 2 Refills Remaining</p>
+                  </div>
 
-              <button 
-                onClick={handleQuickRefill}
-                disabled={isOrdering}
-                className="w-full py-3 bg-brand-navy text-white rounded font-medium flex items-center justify-center transition-all hover:bg-brand-teal shadow-md shadow-brand-teal/20"
-              >
-                <AnimatePresence mode="wait">
-                  {isOrdering ? (
-                     <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  ) : orderComplete ? (
-                     <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5" /> Order Placed</motion.div>
-                  ) : (
-                     <motion.span key="text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Refill for ₦1,500</motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
+                  <button 
+                    onClick={handleQuickRefill}
+                    disabled={isOrdering}
+                    className="w-full py-3 bg-brand-navy text-white rounded font-medium flex items-center justify-center transition-all hover:bg-brand-teal shadow-md shadow-brand-teal/20"
+                  >
+                    <AnimatePresence mode="wait">
+                      {isOrdering ? (
+                         <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      ) : orderComplete ? (
+                         <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2"><CheckCircle2 className="w-5 h-5" /> Order Placed</motion.div>
+                      ) : (
+                         <motion.span key="text" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Refill for ₦1,500</motion.span>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </div>
+              </TiltCard>
             </motion.div>
 
             {/* Marketplace Setup */}

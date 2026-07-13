@@ -13,6 +13,10 @@
   --color-brand-red: #FF6B6B;
 }
 
+@utility perspective-1000 {
+  perspective: 1000px;
+}
+
 body {
   background-color: var(--color-brand-light);
   color: var(--color-brand-dark);
